@@ -1,0 +1,26 @@
+{
+  "name": "a618--assignment",
+  "version": "1.0.0",
+  "description": "g-drive analytics",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Bhavik Patel",
+  "license": "ISC",
+  "dependencies": {
+    "cookie-parser": "^1.4.6",
+    "dotenv": "^16.1.3",
+    "express": "^4.18.2",
+    "googleapis": "^118.0.0",
+    "mongoose": "^7.2.2",
+    "pg": "^8.11.0",
+    "uuid": "^9.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.22"
+  }
+}
