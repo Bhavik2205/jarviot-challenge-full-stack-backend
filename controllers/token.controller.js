@@ -23,7 +23,6 @@ export const Auth = async (req, res) => {
         "email"
       ],
     });
-    // console.log(url.code)
     res.redirect(url);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -33,10 +32,8 @@ export const Auth = async (req, res) => {
 export const Redirect = async (req, res) => {
   try {
     const { code } = req.query;
-    // console.log(code)
     const { tokens } = await oauth2Client.getToken(code);
     
-    // oauth2Client.setCredentials(tokens);
     console.log(tokens);
     const OAUTH = new google.auth.OAuth2(tokens);
     OAUTH.setCredentials(tokens)
@@ -56,7 +53,6 @@ export const Redirect = async (req, res) => {
     console.log("Cookie created Successfully")
     console.log("Loading...")
 
-    // res.redirect(`http://localhost:4000/analytics?code=${code}`)
     const drive = google.drive({ version: "v3", auth: OAUTH });
     // Retrieve the list of files and folders
 
@@ -104,9 +100,6 @@ export const Redirect = async (req, res) => {
                     email: owner.emailAddress
                 }
                 creators.push(owners)
-              // console.log(owner.emailAddress)
-            // console.log("owners")
-            // console.log(owners)
           })  
       }
 
@@ -121,18 +114,8 @@ export const Redirect = async (req, res) => {
                 }
                 sharedWith.push(share);
             }
-  
-            //   console.log("share")
-            //   console.log(share)
           })
       }
-        // owners.forEach((owner) => {
-        //     const owners = {
-        //         name: owner.displayName,
-        //         email: owner.emailAddress
-        //     }
-        //     creators.push(owners);
-        // })
        if (permissions && permissions.length > 0) {
         permissions.forEach((permission) => {
             if(permission.type === 'anyone' && permission.role === 'reader'){
@@ -161,15 +144,8 @@ export const Redirect = async (req, res) => {
                 peopleWithAccess.add(permission.emailAddress);
                 riskScore += 10;
             }
-        //   if (permission.emailAddress) {
-        //     peopleWithAccess.add(permission.emailAddress);
-        //     riskScore += 5;
-        //   }
         });
       }
-    //    else {
-    //     externallyShared.push(file);
-    //   }
     });
     let finalData = []
     finalData.push({externallyShared: externallyShared.length});
@@ -179,13 +155,10 @@ export const Redirect = async (req, res) => {
     const maxPossibleRiskScore = allFiles.length * 10;
     const cs = (riskScore / maxPossibleRiskScore) * 100;
     const correctScore = (Math.min(Math.max(cs, 0), 100)).toFixed(0);
-    // const aggregateRiskScore = calculateAggregateRiskScore(allFiles);
+
     finalData.push({RiskScore: correctScore});
     finalData.push({PublicFiles: publicFiles});
     finalData.push({ExternallyShared: externallyShared});
-    // console.log("Public Files:", publicFiles.length);
-    // console.log("People with Access:", peopleWithAccess.size);
-    // console.log("Externally Shared:", externallyShared.length);
     res
       .status(200)
       .json(
@@ -196,71 +169,6 @@ export const Redirect = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
-
-// export const Analytics = async(req, res) => {
-//     try {
-//         const {code} = req.query;
-//         const { tokens } = await oauth2Client.getToken(code);
-        
-//         // oauth2Client.setCredentials(tokens);
-//         console.log(tokens);
-//         const OAUTH = new google.auth.OAuth2(tokens);
-//         OAUTH.setCredentials(tokens)
-//         const drive = google.drive({ version: "v3", auth: OAUTH });
-//     // Retrieve the list of files and folders
-
-//     let pageToken = null;
-//     let allFiles = [];
-
-//     do {
-//       const response = await drive.files.list({
-//         pageSize: 1000, // Set the page size as per your requirement
-//         pageToken: pageToken,
-//         fields:
-//           "nextPageToken, files(id, name, owners, shared, webViewLink, permissions)",
-//         includeItemsFromAllDrives: true,
-//         supportsAllDrives: true, // Specify the fields you need
-//       });
-
-//       const files = response.data.files;
-//       allFiles = allFiles.concat(files);
-
-//       pageToken = response.data.nextPageToken;
-//     } while (pageToken);
-//     console.log(allFiles.length);
-//     let publicFiles = [];
-//     let peopleWithAccess = new Set();
-//     let externallyShared = [];
-
-//     // allFiles.forEach((file) => {
-//     //   const shared = file.shared;
-//     //   const permissions = file.permissions;
-
-//     //   if (shared && shared.publiclyAccessible) {
-//     //     publicFiles.push(file);
-//     //   } else if (permissions && permissions.length > 0) {
-//     //     permissions.forEach((permission) => {
-//     //       if (permission.emailAddress) {
-//     //         peopleWithAccess.add(permission.emailAddress);
-//     //       }
-//     //     });
-//     //   } else {
-//     //     externallyShared.push(file);
-//     //   }
-//     // });
-
-//     console.log("Public Files:", publicFiles.length);
-//     console.log("People with Access:", peopleWithAccess.size);
-//     console.log("Externally Shared:", externallyShared.length);
-//     res
-//       .status(200)
-//       .json(
-//         allFiles.length
-//       );
-//     } catch (error) {
-//         res.status(500).json({error: error.message})
-//     }
-// }
 
 export const RevokeAccess = async(req, res) => {
     try {
@@ -281,7 +189,6 @@ export const RevokeAccess = async(req, res) => {
                     })
                 
             }
-                // res.send("Access Revoked Successfully")
             })
         } else {
             let token = await Token.findOne({email: email, status: "Active"});
@@ -296,7 +203,6 @@ export const RevokeAccess = async(req, res) => {
                     })
                 })
             }
-            // res.send("No account found")
         }
     } catch (error) {
         if(error.message === "invalid_token"){
