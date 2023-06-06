@@ -9,7 +9,8 @@ steps to start the server
 2) Click on allow access in the prompt.
 3) It will then redirect you to another link with access token in it. 
 
-//Internal Api. Don't use this manually'\n'
+//Internal Api. Don't use this manually
+
 ****http://localhost:4000/google/redirect****
 1) It will take some time to read the files in your drive.
 2) After loading all the file and analysing the risk score, it will respond with something like this
